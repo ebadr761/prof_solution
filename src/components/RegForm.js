@@ -227,18 +227,28 @@ const RegForm = () => {
       </button>
 
       {success && (
-        <div className="success-box">
+        <div style={{ 
+          color: 'black',
+          border: '2px solid black',
+          display: 'block',
+          padding: '20px',
+          width: '100%',
+          textAlign: 'center',
+          marginTop: '20px'
+        }}>
           <p>{success}</p>
         </div>
       )}
 
       {errors.length > 0 && (
         <div style={{ 
-          color: '#D32F2F',
-          backgroundColor: '#FFEBEE',
-          padding: '10px',
-          borderRadius: '4px',
-          marginTop: '15px'
+          color: 'black',
+          border: '2px solid black',
+          display: 'block',
+          padding: '20px',
+          width: '100%',
+          textAlign: 'center',
+          marginTop: '20px'
         }}>
           {errors.map((error, i) => (
             <p key={i}>{error}</p>

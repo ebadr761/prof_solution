@@ -1,0 +1,33 @@
+.signUp {
+    margin-top: -20px;
+    margin-bottom: -10px;
+}
+.signup-button {
+    background-color: #4CAF50;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+    opacity: 0.5;
+}
+.signup-button:hover {
+    background-color: #45A049;
+    opacity: 1;
+}
+.error-box {
+    color: black;
+    border: 2px solid black;
+    display: block;
+    padding: 20px;
+    width: 100%;
+    text-align: center; 
+    margin-top: 20px;
+}
+.success-box {
+    color: black;
+    border: 2px solid black;
+    display: block;
+    padding: 20px;
+    width: 100%;
+    text-align: center; 
+    margin-top: 20px;
+}

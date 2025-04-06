@@ -11,33 +11,49 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [studentId, setStudentId] = useState(null);
 
-  const login = async (userData) => {
+  const login = async (username, password) => {
     try {
+      console.log('Login attempt starting...', { username });
+
       const response = await fetch('http://localhost:5000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          username: userData.username,
-          password: userData.password
-        })
+        body: JSON.stringify({ username, password }),
       });
-      
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-      
+
+      console.log('Fetch response received:', {
+        status: response.status,
+        statusText: response.statusText,
+      });
+
       const data = await response.json();
-      setUser({
-        ...userData,
-        id: data.studentId,
-        enrolledCourses: []
-      });
-      localStorage.setItem('user', JSON.stringify(userData));
+      console.log('Response data:', data);
+
+      if (response.ok) {
+        console.log('Login successful, updating state...');
+        setIsAuthenticated(true);
+        setStudentId(data.studentId);
+        setUser({ username, studentId: data.studentId });
+        localStorage.setItem('user', JSON.stringify({ 
+          username, 
+          studentId: data.studentId 
+        }));
+        return data;
+      } else {
+        console.error('Login failed:', data.message);
+        throw new Error(data.message || 'Login failed');
+      }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login error:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
       throw error;
     }
   };
@@ -53,7 +69,7 @@ export const AuthProvider = ({ children }) => {
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, isAuthenticated, studentId }}>
       {children}
     </AuthContext.Provider>
   );

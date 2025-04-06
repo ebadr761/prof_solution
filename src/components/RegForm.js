@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 const RegForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -28,7 +30,7 @@ const RegForm = () => {
       errs.confirmPassword = "Passwords do not match.";
     }
     // Email: simple email format validation.
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    if (!emailRegex.test(formData.email)) {
       errs.email = "Invalid email format.";
     }
     return errs;

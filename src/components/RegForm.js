@@ -23,7 +23,7 @@ const RegForm = () => {
       errs.username = "Username must be 3-20 characters, start with a letter and use only letters, numbers, hyphens or underscores.";
     }
     // Password: at least 8 characters, one uppercase, one lowercase, one number, one special char, no spaces.
-    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+\[\]{}|;:'",.<>?/`~])[A-Za-z\d!@#$%^&*()\-_=+\[\]{}|;:'",.<>?/`~]{8,}/.test(formData.password)) {
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+[\]{}|;:'",.<>?/`~])[A-Za-z\d!@#$%^&*()\-_=+[\]{}|;:'",.<>?/`~]{8,}/.test(formData.password)) {
       errs.password = "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.";
     }
     if (formData.password !== formData.confirmPassword) {

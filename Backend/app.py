@@ -15,7 +15,7 @@ def load_data(filename):
 courses_data = load_data("courses.json")
 testimonials_data = load_data("testimonials.json")
 
-# In-memory storage for registered students with empty enrolled_courses arrays
+# In-memory storage for registered students
 students = [
     {
         "id": 1,

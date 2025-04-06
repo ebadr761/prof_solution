@@ -110,7 +110,7 @@ def student_courses(student_id):
     for student in students:
         if student['id'] == student_id:
             return jsonify(student['enrolled_courses']), 200
-    return jsonify([]), 404
+    return jsonify({"message": "Student not found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)

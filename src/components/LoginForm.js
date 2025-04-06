@@ -6,7 +6,7 @@ const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(''); // Add success state
+  const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -15,25 +15,24 @@ const LoginForm = () => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    setSuccess(''); // Clear any previous success message
+    setSuccess('');
 
     try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users');
-      const users = await response.json();
-      const validUser = users.find(u => u.username === username && u.email === password);
-
-      if (validUser) {
-        login(validUser);
-        setSuccess('Logged in successfully! Redirecting...'); // Set success message
-        // Redirect after 2 seconds
-        setTimeout(() => {
-          navigate('/courses');
-        }, 2000);
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        login({ id: data.studentId, name: data.username });
+        setSuccess('Logged in successfully! Redirecting...');
+        setTimeout(() => navigate('/courses'), 1500);
       } else {
-        setError('Invalid username or password!');
+        setError(data.message);
       }
     } catch (err) {
-      setError('Failed to connect to the server. Please try again later.');
+      setError('Server connection failed. Please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +48,7 @@ const LoginForm = () => {
     }}>
       <div style={{
         width: '100%',
-        maxWidth: '350px',  // Reduced from 400px
+        maxWidth: '350px',
         padding: '20px',
         backgroundColor: 'white',
         borderRadius: '8px',
@@ -67,7 +66,7 @@ const LoginForm = () => {
               onChange={(e) => setUsername(e.target.value)}
               required
               style={{ 
-                width: 'calc(100% - 16px)',  // Account for padding
+                width: 'calc(100% - 16px)',
                 padding: '8px'
               }}
             />
@@ -84,7 +83,7 @@ const LoginForm = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               style={{ 
-                width: 'calc(100% - 16px)',  // Account for padding
+                width: 'calc(100% - 16px)',
                 padding: '8px'
               }}
             />
@@ -105,9 +104,9 @@ const LoginForm = () => {
 
           {error && (
             <div style={{ 
-              color: '#D32F2F', 
-              backgroundColor: '#FFEBEE', 
-              padding: '10px', 
+              color: '#D32F2F',
+              backgroundColor: '#FFEBEE',
+              padding: '10px',
               borderRadius: '4px',
               marginBottom: '15px'
             }}>

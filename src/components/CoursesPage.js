@@ -31,7 +31,6 @@ const CoursesPage = () => {
   useEffect(() => {
     const fetchEnrolledCourses = async () => {
       if (!user?.id) return;
-      
       try {
         const response = await fetch(`http://localhost:5000/student_courses/${user.id}`);
         if (!response.ok) throw new Error('Failed to fetch enrolled courses');
@@ -45,67 +44,45 @@ const CoursesPage = () => {
     fetchEnrolledCourses();
   }, [user]);
 
-  const handleEnroll = async (course) => {
-    if (!user?.id) {
-      setError('Please log in to enroll in courses');
+  const handleEnroll = (course) => {
+    // Check if the user is logged in
+    if (!user || !user.id) {
+      setError('Please login to enroll in a course');
+      setTimeout(() => setError(null), 3000);
       return;
     }
-
-    try {
-      const response = await fetch(`http://localhost:5000/enroll/${user.id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: course.name })
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to enroll');
-      }
-
-      // Fetch updated enrolled courses
-      const enrollmentResponse = await fetch(`http://localhost:5000/student_courses/${user.id}`);
-      if (!enrollmentResponse.ok) throw new Error('Failed to update enrollment list');
-      const updatedEnrollments = await enrollmentResponse.json();
-      setEnrolledCourses(updatedEnrollments);
-      
-      alert(data.message);
-    } catch (err) {
-      setError(err.message || 'Failed to enroll in course');
-      console.error('Error enrolling in course:', err);
-    }
+    fetch(`http://localhost:5000/enroll/${user.id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(course)  // Send the full course object
+    })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message);
+        // Refresh enrolled courses
+        fetch(`http://localhost:5000/student_courses/${user.id}`)
+          .then(res => res.json())
+          .then(data => setEnrolledCourses(data));
+      })
+      .catch(err => console.error(err));
   };
 
-  const handleRemove = async (courseName) => {
-    if (!user?.id) {
-      setError('Please log in to drop courses');
-      return;
-    }
-
-    try {
-      const response = await fetch(`http://localhost:5000/drop/${user.id}`, {
+  const handleRemove = (courseName) => {
+    if (user && user.id) {
+      fetch(`http://localhost:5000/drop/${user.id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: courseName })
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to drop course');
-      }
-
-      // Fetch updated enrolled courses
-      const enrollmentResponse = await fetch(`http://localhost:5000/student_courses/${user.id}`);
-      if (!enrollmentResponse.ok) throw new Error('Failed to update enrollment list');
-      const updatedEnrollments = await enrollmentResponse.json();
-      setEnrolledCourses(updatedEnrollments);
-      
-      alert(data.message);
-    } catch (err) {
-      setError(err.message || 'Failed to drop course');
-      console.error('Error dropping course:', err);
+      })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message);
+          // Refresh enrolled courses
+          fetch(`http://localhost:5000/student_courses/${user.id}`)
+            .then(res => res.json())
+            .then(data => setEnrolledCourses(data));
+        })
+        .catch(err => console.error(err));
     }
   };
 

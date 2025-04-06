@@ -15,14 +15,14 @@ def load_data(filename):
 courses_data = load_data("courses.json")
 testimonials_data = load_data("testimonials.json")
 
-# In-memory storage for registered students
+# In-memory storage for registered students with empty enrolled_courses arrays
 students = [
     {
         "id": 1,
         "username": "mazin123",
         "password": "mazinpass",
         "email": "mazin@example.com",
-        "enrolled_courses": ["Web Development"]
+        "enrolled_courses": []
     },
     {
         "id": 2,
@@ -44,7 +44,6 @@ def register():
     email = data.get('email')
     password = data.get('password')
     
-    # Check if username already exists
     for student in students:
         if student['username'] == username:
             return jsonify({"message": "Username already taken."}), 401
@@ -83,29 +82,27 @@ def get_courses():
 
 @app.route('/enroll/<int:student_id>', methods=['POST'])
 def enroll_course(student_id):
-    data = request.get_json()  # Expected to contain course info (e.g., course name)
-    course_name = data.get('name')
-    # Find student by ID
+    course = request.get_json()  # Expecting the full course object
+    course_name = course.get('name')
     for student in students:
         if student['id'] == student_id:
-            # Avoid duplicate enrollments
-            if course_name in student['enrolled_courses']:
+            if any(c.get('name') == course_name for c in student['enrolled_courses']):
                 return jsonify({"message": "Already enrolled in this course."}), 400
-            student['enrolled_courses'].append(course_name)
+            student['enrolled_courses'].append(course)
             return jsonify({"message": "Enrolled successfully!"}), 200
     return jsonify({"message": "Student not found."}), 404
 
 @app.route('/drop/<int:student_id>', methods=['DELETE'])
 def drop_course(student_id):
-    data = request.get_json()  # Expected to contain course info (e.g., course name)
+    data = request.get_json()  # Expected to contain { "name": "Course Name" }
     course_name = data.get('name')
     for student in students:
         if student['id'] == student_id:
-            if course_name in student['enrolled_courses']:
-                student['enrolled_courses'].remove(course_name)
-                return jsonify({"message": "Course dropped successfully!"}), 200
-            else:
-                return jsonify({"message": "Course not found in enrolled courses."}), 400
+            for i, course in enumerate(student['enrolled_courses']):
+                if course.get('name') == course_name:
+                    del student['enrolled_courses'][i]
+                    return jsonify({"message": "Course dropped successfully!"}), 200
+            return jsonify({"message": "Course not found in enrolled courses."}), 400
     return jsonify({"message": "Student not found."}), 404
 
 @app.route('/student_courses/<int:student_id>', methods=['GET'])

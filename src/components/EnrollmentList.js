@@ -2,7 +2,8 @@ import React from 'react';
 
 const EnrollmentList = ({ enrolledCourses = [], onRemove }) => {
   const totalCredits = enrolledCourses.reduce((sum, course) => {
-    const weeks = parseInt(course.duration.match(/\d+/)?.[0] || 0);
+    // Ensure course.duration exists before calling .match()
+    const weeks = course.duration ? parseInt(course.duration.match(/\d+/)?.[0] || 0) : 0;
     return sum + weeks;
   }, 0);
 
@@ -18,15 +19,13 @@ const EnrollmentList = ({ enrolledCourses = [], onRemove }) => {
       <h2 style={{ color: '#004080', marginBottom: '20px' }}>My Enrollments</h2>
       
       {enrolledCourses.length === 0 ? (
-        <p style={{ color: '#666', textAlign: 'center' }}>
-          No courses enrolled yet
-        </p>
+        <p style={{ color: '#666', textAlign: 'center' }}>No courses enrolled yet</p>
       ) : (
         <>
           <div style={{ marginBottom: '20px' }}>
             {enrolledCourses.map(course => (
               <div 
-                key={course.enrollmentId}
+                key={course.name}  // Use course name as key
                 style={{
                   backgroundColor: 'white',
                   borderRadius: '8px',
@@ -34,12 +33,8 @@ const EnrollmentList = ({ enrolledCourses = [], onRemove }) => {
                   marginBottom: '15px'
                 }}
               >
-                <h4 style={{ margin: '0 0 10px', color: '#003366' }}>
-                  {course.name}
-                </h4>
-                <p style={{ margin: '5px 0', fontSize: '0.9em' }}>
-                  Instructor: {course.instructor}
-                </p>
+                <h4 style={{ margin: '0 0 10px', color: '#003366' }}>{course.name}</h4>
+                <p style={{ margin: '5px 0', fontSize: '0.9em' }}>Instructor: {course.instructor}</p>
                 <div style={{ 
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -47,18 +42,14 @@ const EnrollmentList = ({ enrolledCourses = [], onRemove }) => {
                 }}>
                   <span style={{ fontSize: '0.9em' }}>{course.duration}</span>
                   <button
-                    onClick={() => onRemove(course.enrollmentId)}
+                    onClick={() => onRemove(course.name)}
                     style={{
                       padding: '5px 10px',
                       backgroundColor: '#dc3545',
                       color: 'white',
                       border: 'none',
                       borderRadius: '4px',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s',
-                      ':hover': {
-                        backgroundColor: '#c82333'
-                      }
+                      cursor: 'pointer'
                     }}
                   >
                     Drop
@@ -67,14 +58,8 @@ const EnrollmentList = ({ enrolledCourses = [], onRemove }) => {
               </div>
             ))}
           </div>
-          
-          <div style={{
-            borderTop: '2px solid #004080',
-            paddingTop: '15px'
-          }}>
-            <h3 style={{ color: '#004080' }}>
-              Total Study Load: {totalCredits} weeks
-            </h3>
+          <div style={{ borderTop: '2px solid #004080', paddingTop: '15px' }}>
+            <h3 style={{ color: '#004080' }}>Total Study Load: {totalCredits} weeks</h3>
           </div>
         </>
       )}

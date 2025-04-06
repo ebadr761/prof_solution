@@ -4,22 +4,22 @@ import styles from './Header.module.css';
 
 const Header = () => {
   return (
-    <>
-      <header className={styles.header}>
-        <div className={styles.logoContainer}>
-          <img 
-            src="/images/logo.jpg" 
-            alt="LMS Logo" 
-            className={styles.logo}
-          />
-        </div>
-        <h1>LMS - Learning Management System</h1>
-      </header>
+    <header className={styles.header}>
+      <div className={styles.logoContainer}>
+        <img 
+          src="/images/logo.jpg" 
+          alt="LMS Logo" 
+          className={styles.logo}
+        />
+        <h1 className={styles.title}>LMS - Learning Management System</h1>
+      </div>
       
-      <nav className={styles.navLinks}>
-        <NavLink to="/">Homepage</NavLink>
+      <nav className={styles.nav}>
+        <NavLink to="/" className={styles.navLink}>
+          Homepage
+        </NavLink>
       </nav>
-    </>
+    </header>
   );
 };
 

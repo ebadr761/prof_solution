@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "./HeaderSignUp";
+import Header from "./HeaderSignUp";  // Changed from ./HeaderSignUp
 import RegForm from "./RegForm";
 import Footer from "./Footer";
 

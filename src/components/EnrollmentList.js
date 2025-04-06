@@ -2,7 +2,7 @@ import React from 'react';
 
 const EnrollmentList = ({ enrolledCourses = [], onRemove }) => {
   const totalCredits = enrolledCourses.reduce((sum, course) => {
-    // Ensure course.duration exists before calling .match()
+    // We want course.duration to exists before calling .match()
     const weeks = course.duration ? parseInt(course.duration.match(/\d+/)?.[0] || 0) : 0;
     return sum + weeks;
   }, 0);

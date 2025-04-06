@@ -1,4 +1,5 @@
-# Group Members: Your Name (UCID), Friend's Name (UCID)
+# Mazin Taher: 30185832
+# Ebad Rehman: 30209407
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json, random, os

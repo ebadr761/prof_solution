@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Header from './Header';
+import Footer from './Footer';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
@@ -39,52 +41,77 @@ const LoginForm = () => {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: '100vh',
-      backgroundColor: '#f5f5f5'
-    }}>
-      <div style={{
-        width: '100%',
-        maxWidth: '350px',
+    <>
+      <Header />
+      <main style={{
         padding: '20px',
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+        textAlign: 'center',
+        alignItems: 'center',
+        margin: '20px auto',
+        maxWidth: '90%'
       }}>
-        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-          <div style={{ marginBottom: '15px' }}>
-            <label htmlFor="username" style={{ display: 'block', marginBottom: '5px' }}>
-              Username:
-            </label>
+        <h2 style={{ color: '#004080' }}>LMS Login</h2>
+        <form onSubmit={handleSubmit} style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          backgroundColor: '#d4d4d4',
+          boxShadow: '10px 10px 15px rgba(0, 0, 0, 0.1)',
+          borderRadius: '30px',
+          padding: '30px',
+          margin: '20px 150px 0px 150px',
+          maxWidth: '100%'
+        }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            marginBottom: '20px',
+            fontFamily: 'Arial, sans-serif',
+            fontSize: '16px'
+          }}>
+            <label htmlFor="username">Username:</label>
             <input
               type="text"
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              style={{ 
-                width: 'calc(100% - 16px)',
-                padding: '8px'
+              style={{
+                width: '250px',
+                padding: '10px',
+                margin: '10px 0',
+                borderRadius: '5px',
+                border: '3px solid #b2b2b2',
+                backgroundColor: 'lightyellow'
               }}
             />
           </div>
 
-          <div style={{ marginBottom: '20px' }}>
-            <label htmlFor="password" style={{ display: 'block', marginBottom: '5px' }}>
-              Password:
-            </label>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            marginBottom: '20px',
+            fontFamily: 'Arial, sans-serif',
+            fontSize: '16px'
+          }}>
+            <label htmlFor="password">Password:</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              style={{ 
-                width: 'calc(100% - 16px)',
-                padding: '8px'
+              style={{
+                width: '250px',
+                padding: '10px',
+                margin: '10px 0',
+                borderRadius: '5px',
+                border: '3px solid #b2b2b2',
+                backgroundColor: 'lightyellow'
               }}
             />
           </div>
@@ -113,25 +140,35 @@ const LoginForm = () => {
               {error}
             </div>
           )}
-
-          <button 
-            type="submit" 
-            disabled={isLoading}
-            style={{
-              width: '100%',
-              padding: '10px',
-              backgroundColor: isLoading ? '#BDBDBD' : '#004080',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: isLoading ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {isLoading ? 'Authenticating...' : 'Login'}
-          </button>
         </form>
-      </div>
-    </div>
+
+        <button 
+          onClick={handleSubmit}
+          disabled={isLoading}
+          style={{
+            marginTop: '25px',
+            marginBottom: '10px',
+            backgroundColor: isLoading ? '#BDBDBD' : '#008000',
+            color: 'white',
+            padding: '10px 15px',
+            border: 'none',
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+            fontSize: '16px',
+            borderRadius: '5px'
+          }}
+        >
+          {isLoading ? 'Authenticating...' : 'Login'}
+        </button>
+
+        <div>
+          <a href="/signup" style={{
+            color: '#004080',
+            textDecoration: 'none'
+          }}>Create an Account</a>
+        </div>
+      </main>
+      <Footer />
+    </>
   );
 };
 

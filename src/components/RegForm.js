@@ -1,131 +1,128 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+import React, { useState } from "react";
+import "./RegForm.css";
+import { useNavigate } from "react-router-dom";
 
 const RegForm = () => {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    username: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
   });
-  const [errors, setErrors] = useState({});
-  const [serverMsg, setServerMsg] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Simple validators based on assignment requirements
-  const validate = () => {
-    const errs = {};
-    // Username: 3-20 characters, starts with letter, alphanumeric/hyphen/underscore only.
-    if (!/^[A-Za-z][A-Za-z0-9_-]{2,19}$/.test(formData.username)) {
-      errs.username = "Username must be 3-20 characters, start with a letter and use only letters, numbers, hyphens or underscores.";
-    }
-    // Password: at least 8 characters, one uppercase, one lowercase, one number, one special char, no spaces.
-    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+[\]{}|;:'",.<>?/`~])[A-Za-z\d!@#$%^&*()\-_=+[\]{}|;:'",.<>?/`~]{8,}/.test(formData.password)) {
-      errs.password = "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.";
-    }
-    if (formData.password !== formData.confirmPassword) {
-      errs.confirmPassword = "Passwords do not match.";
-    }
-    // Email: simple email format validation.
-    if (!emailRegex.test(formData.email)) {
-      errs.email = "Invalid email format.";
-    }
-    return errs;
-  };
+  const [errors, setErrors] = useState([]);
+  const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const validateSignup = async (e) => {
     e.preventDefault();
-    setServerMsg('');
-    const errs = validate();
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
+    const newErrors = [];
+    const { username, password, confirmPassword, email } = formData;
+
+    const usernameValid = /^[a-zA-Z][a-zA-Z0-9_-]{2,19}$/;
+    if (!usernameValid.test(username)) {
+      newErrors.push("Invalid username (Reason:...)");
+    }
+
+    const passwordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+\[\]{}|;:'\",.<>?/`~])[^\s]{8,}$/;
+    if (!passwordValid.test(password)) {
+      newErrors.push("Invalid password (Reason:...)");
+    }
+
+    if (password !== confirmPassword) {
+      newErrors.push("Passwords do not match");
+    }
+
+    const emailValid = /^[^\s@]+@[^\s@]+\.(com|net|io)$/;
+    if (!emailValid.test(email)) {
+      newErrors.push("Invalid email (Reason:...)");
+    }
+
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
+      setSuccess("");
       return;
     }
-    setErrors({});
-    setIsLoading(true);
+
     try {
-      const response = await fetch('http://localhost:5000/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://127.0.0.1:5000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password
+          username,
+          password,
+          email
         })
       });
-      const data = await response.json();
-      if (!response.ok) {
-        setServerMsg(data.message || "Signup failed");
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSuccess(result.message);
+        setErrors([]);
+        setTimeout(() => navigate("/login"), 2000);
       } else {
-        setServerMsg(data.message);
-        // Redirect to login after a brief delay
-        setTimeout(() => navigate('/login'), 1500);
+        setErrors([result.message || "Registration failed."]);
+        setSuccess("");
       }
     } catch (err) {
-      setServerMsg("Server error. Please try again later.");
-    } finally {
-      setIsLoading(false);
+      setErrors(["Could not connect to server."]);
+      setSuccess("");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '0 auto' }}>
+    <main className="login">
       <h2>Sign Up</h2>
-      <div>
-        <label>Username:</label>
-        <input name="username" type="text" value={formData.username} onChange={handleChange} required />
-        {errors.username && <p style={{ color: 'red' }}>{errors.username}</p>}
-      </div>
-      <div>
-        <label>Email:</label>
-        <input name="email" type="email" value={formData.email} onChange={handleChange} required />
-        {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
-      </div>
-      <div>
-        <label>Password:</label>
-        <input name="password" type="password" value={formData.password} onChange={handleChange} required />
-        {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
-      </div>
-      <div>
-        <label>Confirm Password:</label>
-        <input name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} required />
-        {errors.confirmPassword && <p style={{ color: 'red' }}>{errors.confirmPassword}</p>}
-      </div>
-      {serverMsg && <div style={{ margin: '10px 0', color: 'green' }}>{serverMsg}</div>}
-      <button 
-        type="submit" 
-        disabled={isLoading}
-        style={{
-          backgroundColor: '#4CAF50',
-          padding: '10px',
-          borderRadius: '5px',
-          margin: '10px 0',
-          opacity: isLoading ? 0.5 : 1,
-          border: 'none',
-          color: 'white',
-          cursor: 'pointer'
-        }}
-        onMouseOver={e => {
-          if (!isLoading) {
-            e.target.style.backgroundColor = "#45A049";
-          }
-        }}
-        onMouseOut={e => {
-          if (!isLoading) {
-            e.target.style.backgroundColor = "#4CAF50";
-          }
-        }}
-      >
-        {isLoading ? "Signing up..." : "Signup"}
-      </button>
-    </form>
+
+      <form onSubmit={validateSignup}>
+        <div className="form-group">
+          <label htmlFor="username">Username:</label>
+          <input type="text" name="username" id="username" value={formData.username} onChange={handleChange} required />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input type="password" name="password" id="password" value={formData.password} onChange={handleChange} required />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="confirmPassword">Confirm Password:</label>
+          <input type="password" name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input type="text" name="email" id="email" value={formData.email} onChange={handleChange} required />
+        </div>
+
+        <div className="signUp">
+          <button type="submit" className="signup-button">Sign Up</button>
+        </div>
+      </form>
+
+      {success && (
+        <div className="success-box">
+          <p>{success}</p>
+        </div>
+      )}
+
+      {errors.length > 0 && (
+        <div className="error-box">
+          {errors.map((error, i) => (
+            <p key={i}>{error}</p>
+          ))}
+        </div>
+      )}
+
+      <a href="/login" id="login-account">Already have an account? Login here</a>
+    </main>
   );
 };
 

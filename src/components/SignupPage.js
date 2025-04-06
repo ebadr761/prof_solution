@@ -1,15 +1,13 @@
-import React from 'react';
-import Header from './Header';
-import Footer from './Footer';
-import RegForm from './RegForm';
+import React from "react";
+import Header from "./HeaderSignUp";
+import RegForm from "./RegForm";
+import Footer from "./Footer";
 
 const SignupPage = () => {
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div>
       <Header />
-      <main style={{ flex: 1, padding: '20px' }}>
-        <RegForm />
-      </main>
+      <RegForm />
       <Footer />
     </div>
   );

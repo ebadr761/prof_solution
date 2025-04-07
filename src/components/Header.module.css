@@ -1,17 +1,18 @@
 .header {
     background-color: #004080;
     color: white;
-    padding: 20px;
+    padding: 10px;
     margin: 0;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
 }
 
 .logoContainer {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 15px;
+    width: 100%;
+    margin-bottom: 15px;
 }
 
 .logo {
@@ -22,6 +23,7 @@
 .title {
     margin: 0;
     font-size: 24px;
+    text-align: right;
 }
 
 .nav {
@@ -29,30 +31,36 @@
     gap: 25px;
 }
 
+.navCenter {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    width: 100%;
+    margin-top: 10px;
+}
+
 .navLink {
     color: white;
     text-decoration: none;
-    font-size: 18px;
-    padding: 10px 0;
-    transition: opacity 0.2s;
+    padding: 0.5rem 1rem;
 }
 
 .navLink:hover {
-    opacity: 0.8;
-    text-decoration: underline;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
 }
 
 .logoutButton {
     background: none;
-    border: none;
+    border: 1px solid white;
     color: white;
-    font-size: 18px;
+    padding: 0.5rem 1rem;
     cursor: pointer;
-    padding: 10px 0;
+    border-radius: 4px;
+    font-size: 18px;
     font-family: inherit;
 }
 
 .logoutButton:hover {
-    opacity: 0.8;
-    text-decoration: underline;
+    background-color: rgba(255, 255, 255, 0.1);
 }

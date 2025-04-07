@@ -14,10 +14,10 @@ const Header = () => {
           alt="LMS Logo" 
           className={styles.logo}
         />
-        <h1 className={styles.title}>LMS</h1>
+        <h1 className={styles.title}>LMS — Learning Management System</h1>
       </div>
       
-      <nav className={styles.nav}>
+      <nav className={styles.navCenter}>
         <Link to="/" className={styles.navLink}>Home</Link>
         <Link to="/courses" className={styles.navLink}>Courses</Link>
         {isLoggedIn ? (

@@ -11,10 +11,10 @@ const Header = () => {
           alt="LMS Logo" 
           className={styles.logo}
         />
-        <h1 className={styles.title}>LMS - Learning Management System</h1>
+        <h1 className={styles.title}>LMS — Learning Management System</h1>
       </div>
       
-      <nav className={styles.nav}>
+      <nav className={styles.navCenter}>
         <NavLink to="/" className={styles.navLink}>
           Homepage
         </NavLink>
